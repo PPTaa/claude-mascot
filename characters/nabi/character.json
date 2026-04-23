@@ -1,0 +1,9 @@
+{
+  "id": "nabi",
+  "displayName": "Nabi (츤데레 고양이)",
+  "description": "A tsundere orange cat that reacts to Claude Code activity",
+  "license": "MIT",
+  "supportedEmotions": ["neutral", "happy", "angry", "shy", "sad", "surprised", "love"],
+  "defaultLanguage": "ko",
+  "supportedLanguages": ["ko", "en"]
+}
