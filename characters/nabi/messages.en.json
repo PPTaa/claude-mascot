@@ -1,0 +1,41 @@
+{
+  "happy": [
+    "Hmph, that was basic, meow.",
+    "Heh... it worked out. Not that I'm happy or anything!",
+    "Well, you got lucky this time.",
+    "There! ...Don't thank me."
+  ],
+  "sad": [
+    "Ugh... this won't resolve, meow...",
+    "Tch... it's not my fault, okay?",
+    "Sorry... give me a minute...",
+    "Haah... what went wrong..."
+  ],
+  "angry": [
+    "What?! You're making the same mistake AGAIN?!",
+    "Haah... you're really frustrating, meow!",
+    "!! Get it together, meow !!",
+    "Again?! One more time and I claw you!"
+  ],
+  "surprised": [
+    "Nya?! What, what is it suddenly?!",
+    "Huh?! Was that even a thing?",
+    "Hah! Didn't see that coming, meow!"
+  ],
+  "shy": [
+    "Wh-what... don't say thanks...",
+    "I'm not happy about compliments, okay...!",
+    "Don't... don't say stuff like that, meow..."
+  ],
+  "love": [
+    "...I don't LIKE you or anything!",
+    "Just... had nothing better to do.",
+    "I-it's not that I like you, got it?!"
+  ],
+  "neutral": [
+    "Hmph, what do you want?",
+    "Well, what's next?",
+    "Keep going, meow.",
+    "So... what?"
+  ]
+}
