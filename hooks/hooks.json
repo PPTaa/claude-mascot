@@ -1,0 +1,46 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run --directory ${CLAUDE_PLUGIN_ROOT} python -m mcp_server.hooks.session_start"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run --directory ${CLAUDE_PLUGIN_ROOT} python -m mcp_server.hooks.session_end"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "async": true,
+            "command": "uv run --directory ${CLAUDE_PLUGIN_ROOT} python -m mcp_server.hooks.on_stop"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "mcp__claude-mascot__show_character",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run --directory ${CLAUDE_PLUGIN_ROOT} python -m mcp_server.inline"
+          }
+        ]
+      }
+    ]
+  }
+}

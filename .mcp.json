@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "claude-mascot": {
+      "type": "stdio",
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory", "${CLAUDE_PLUGIN_ROOT}",
+        "python", "-m", "mcp_server.server"
+      ]
+    }
+  }
+}
