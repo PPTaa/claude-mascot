@@ -31,7 +31,10 @@ def show_character(emotion: str, message: str = "") -> str:
     """
     character_id = _active_character()
     language = _active_language()
-    meta = char_loader.load_character(character_id)
+    try:
+        meta = char_loader.load_character(character_id)
+    except FileNotFoundError as e:
+        return f"Error: character '{character_id}' not found ({e})"
     supported = meta.get("supportedEmotions", ["neutral"])
     if emotion not in supported:
         emotion = "neutral"

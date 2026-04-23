@@ -6,8 +6,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-NABI_PANE_ID_DIR = Path("/tmp")
-DISPLAY_SCRIPT = Path(__file__).parent / "display.py"
+PLUGIN_PANE_ID_DIR = Path("/tmp")
 
 
 def _pane_height() -> int:
@@ -19,7 +18,7 @@ def _pane_height() -> int:
 
 def _pane_id_file(session: str) -> Path:
     safe = session.replace("/", "_").replace(":", "_")
-    return NABI_PANE_ID_DIR / f"claude_mascot_pane_id_{safe}"
+    return PLUGIN_PANE_ID_DIR / f"claude_mascot_pane_id_{safe}"
 
 
 def get_active_target() -> str | None:
@@ -79,19 +78,19 @@ def _kill_orphan_mascot_panes(session_name: str, keep_pane_id: str | None = None
             parts = line.split()
             if len(parts) != 2:
                 continue
-            pid, ppid = parts
-            if pid == keep_pane_id:
+            pane_id, pane_pid = parts
+            if pane_id == keep_pane_id:
                 continue
             try:
                 ps = subprocess.run(
-                    ["ps", "-o", "command=", "-p", ppid],
+                    ["ps", "-o", "command=", "-p", pane_pid],
                     capture_output=True, text=True, timeout=3,
                 )
                 if "mcp_server.display" not in ps.stdout and "display.py" not in ps.stdout:
                     continue
             except Exception:
                 continue
-            subprocess.run(["tmux", "kill-pane", "-t", pid],
+            subprocess.run(["tmux", "kill-pane", "-t", pane_id],
                            capture_output=True, timeout=3)
     except Exception:
         pass
@@ -103,7 +102,7 @@ def _kill_orphan_mascot_panes(session_name: str, keep_pane_id: str | None = None
             capture_output=True, text=True, timeout=3,
         )
         live_set = set(live.stdout.split()) if live.returncode == 0 else set()
-        for pf in NABI_PANE_ID_DIR.glob("claude_mascot_pane_id_*"):
+        for pf in PLUGIN_PANE_ID_DIR.glob("claude_mascot_pane_id_*"):
             try:
                 content = pf.read_text().strip()
             except Exception:
