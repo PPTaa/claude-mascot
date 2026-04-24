@@ -10,38 +10,39 @@
     "claudeCode": ">=1.0.0",
     "externalTools": ["tmux", "uv"]
   },
-  "mcpServers": "./.mcp.json",
-  "hooks": "./hooks/hooks.json",
+  "mcpServers": "./.claude-plugin/.mcp.json",
   "userConfig": {
     "character": {
       "type": "string",
-      "description": "Which mascot character to display",
-      "default": "nabi",
-      "enum": ["nabi"]
+      "title": "Character",
+      "description": "Which mascot character to display (currently only: nabi)",
+      "default": "nabi"
     },
     "language": {
       "type": "string",
+      "title": "Language",
       "description": "Message language (ko | en)",
-      "default": "ko",
-      "enum": ["ko", "en"]
+      "default": "ko"
     },
     "paneHeight": {
       "type": "number",
-      "description": "Height of the tmux pane in rows",
+      "title": "Pane Height",
+      "description": "Height of the tmux pane in rows (8–30)",
       "default": 14,
-      "minimum": 8,
-      "maximum": 30
+      "min": 8,
+      "max": 30
     },
     "stopHookEnabled": {
       "type": "boolean",
+      "title": "Stop Hook Enabled",
       "description": "Auto-update mascot emotion at end of each Claude response",
       "default": true
     },
     "startupEmotion": {
       "type": "string",
-      "description": "Emotion shown when a new session starts",
-      "default": "happy",
-      "enum": ["neutral", "happy", "angry", "shy", "sad", "surprised", "love"]
+      "title": "Startup Emotion",
+      "description": "Emotion shown when a new session starts (neutral | happy | angry | shy | sad | surprised | love)",
+      "default": "happy"
     }
   }
 }

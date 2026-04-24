@@ -29,11 +29,27 @@ def _truthy_env(name: str, default: bool) -> bool:
     return v.strip().lower() in {"1", "true", "yes", "on"}
 
 
-def _extract_last_assistant_text(transcript_path: str) -> str:
+def _extract_text(msg: dict) -> str:
+    content = msg.get("content", "")
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        parts = [
+            b.get("text", "") for b in content
+            if isinstance(b, dict) and b.get("type") == "text"
+        ]
+        return "\n".join(parts)
+    return ""
+
+
+def _extract_last_turn_texts(transcript_path: str) -> tuple[str, str]:
+    """Return (last_user_text, last_assistant_text) from the transcript."""
     try:
         lines = Path(transcript_path).read_text(encoding="utf-8").strip().splitlines()
     except Exception:
-        return ""
+        return "", ""
+    user_text = ""
+    assistant_text = ""
     for line in reversed(lines):
         try:
             obj = json.loads(line)
@@ -42,19 +58,14 @@ def _extract_last_assistant_text(transcript_path: str) -> str:
         if not isinstance(obj, dict):
             continue
         msg = obj.get("message") if isinstance(obj.get("message"), dict) else obj
-        if msg.get("role") != "assistant":
-            continue
-        content = msg.get("content", "")
-        if isinstance(content, str):
-            return content
-        if isinstance(content, list):
-            parts = [
-                b.get("text", "") for b in content
-                if isinstance(b, dict) and b.get("type") == "text"
-            ]
-            if parts:
-                return "\n".join(parts)
-    return ""
+        role = msg.get("role")
+        if role == "assistant" and not assistant_text:
+            assistant_text = _extract_text(msg)
+        elif role == "user" and not user_text:
+            user_text = _extract_text(msg)
+        if user_text and assistant_text:
+            break
+    return user_text, assistant_text
 
 
 def main():
@@ -66,18 +77,28 @@ def main():
     except Exception:
         payload = {}
 
+    if pane.consume_claude_touched():
+        _log("skipped: claude already called show_character this turn")
+        return
+
     character_id = os.environ.get("CLAUDE_PLUGIN_USERCONFIG_CHARACTER", "nabi")
     language = os.environ.get("CLAUDE_PLUGIN_USERCONFIG_LANGUAGE", "ko")
 
     transcript_path = payload.get("transcript_path", "")
-    text = _extract_last_assistant_text(transcript_path) if transcript_path else ""
+    user_text, assistant_text = (
+        _extract_last_turn_texts(transcript_path) if transcript_path else ("", "")
+    )
+    combined = f"{user_text}\n{assistant_text}"
 
     rules = char_loader.load_emotion_rules(character_id)
-    emotion = emo_mod.pick_emotion(text, rules)
+    emotion = emo_mod.pick_emotion(combined, rules)
     messages = char_loader.load_messages(character_id, language)
     message = emo_mod.pick_message(emotion, messages)
 
-    _log(f"character={character_id} lang={language} emotion={emotion} text_len={len(text)}")
+    _log(
+        f"character={character_id} lang={language} emotion={emotion} "
+        f"user_len={len(user_text)} assistant_len={len(assistant_text)}"
+    )
 
     try:
         pane.update_pane(character_id, language, emotion, message)

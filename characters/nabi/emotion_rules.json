@@ -1,7 +1,7 @@
 {
   "priority": ["angry", "happy", "sad", "shy", "surprised"],
   "patterns": {
-    "angry": "(틀렸|잘못\\s*됐|같은\\s*실수|다시\\s*봐|wrong\\b|mistake)",
+    "angry": "(틀렸|잘못\\s*됐|같은\\s*실수|다시\\s*봐|wrong\\b|mistake|뒤질|뒤져|죽을래|화내|짜증|빡치|바보|멍청|꺼져|닥쳐|angry|shut\\s*up)",
     "happy": "(완료|성공|잘\\s*됐|잘됨|done\\b|works?\\b|passed|fixed|해결(?!\\s*안)|끝났)",
     "sad": "(에러|실패|fail(?:ed|ure)?|error|broken|안\\s*되|안됨|안된다|못\\s*해|못함|문제\\s*있)",
     "shy": "(감사|고마|thank|칭찬|잘했|굿굿|수고|최고)",

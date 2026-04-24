@@ -21,6 +21,37 @@ def _pane_id_file(session: str) -> Path:
     return PLUGIN_PANE_ID_DIR / f"claude_mascot_pane_id_{safe}"
 
 
+def _claude_touched_file(session: str) -> Path:
+    """Marker file written when Claude calls show_character directly.
+    Stop hook reads+deletes it to decide whether to run the regex fallback."""
+    safe = session.replace("/", "_").replace(":", "_")
+    return PLUGIN_PANE_ID_DIR / f"claude_mascot_claude_touched_{safe}"
+
+
+def mark_claude_touched():
+    target = get_active_target()
+    if not target:
+        return
+    session_name = target.split(":")[0]
+    try:
+        _claude_touched_file(session_name).write_text("1")
+    except Exception:
+        pass
+
+
+def consume_claude_touched() -> bool:
+    """Return True if Claude touched this turn, and clear the marker."""
+    target = get_active_target()
+    if not target:
+        return False
+    session_name = target.split(":")[0]
+    pf = _claude_touched_file(session_name)
+    if pf.exists():
+        pf.unlink(missing_ok=True)
+        return True
+    return False
+
+
 def get_active_target() -> str | None:
     """Return 'session:window' of the currently-attached active window, or None."""
     try:
