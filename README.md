@@ -34,14 +34,14 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ## Installation
 
-In Claude Code, add this repo as a marketplace and install the plugin:
+Inside Claude Code, register this repo as a marketplace, then install the plugin:
 
 ```
-/plugins marketplace add github:PPTaa/claude-mascot
-/plugins install claude-mascot@claude-mascot-marketplace
+/plugin marketplace add PPTaa/claude-mascot
+/plugin install claude-mascot@claude-mascot-marketplace
 ```
 
-Open `claude` inside a tmux session and the mascot pane appears automatically.
+Then run `claude` inside a tmux session — the mascot pane appears at the bottom automatically.
 
 ## Configuration
 

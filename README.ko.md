@@ -34,14 +34,14 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ## 설치
 
-Claude Code에서 이 리포를 마켓플레이스로 추가하고 플러그인 설치:
+Claude Code 안에서 이 리포를 마켓플레이스로 등록한 뒤 플러그인을 설치합니다:
 
 ```
-/plugins marketplace add github:PPTaa/claude-mascot
-/plugins install claude-mascot@claude-mascot-marketplace
+/plugin marketplace add PPTaa/claude-mascot
+/plugin install claude-mascot@claude-mascot-marketplace
 ```
 
-tmux 세션 안에서 `claude`를 띄우면 마스코트 팬이 자동으로 뜹니다.
+그다음 tmux 세션 안에서 `claude`를 실행하면 마스코트 팬이 하단에 자동으로 뜹니다.
 
 ## 설정
 
