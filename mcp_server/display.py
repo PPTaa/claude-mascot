@@ -36,8 +36,9 @@ class Animator:
     def _schedule(self, key, lo, hi):
         setattr(self, f"_next_{key}", self.t + random.randint(lo, hi))
 
-    def tick(self):
-        self.t += 1
+    def _compute_state(self):
+        """Compute current animation state. Returns dict with keys:
+        state ('idle'|'blink'|'special'), eyes, msg, deco, shake."""
         c = self.cfg
         if self.mode == "idle":
             if self.t >= self._next_special:
@@ -55,18 +56,28 @@ class Animator:
         eyes = c["eyes"]
         msg = c["msg"]
         shake = 0
+        state_name = "idle"
         if self.mode == "special":
             eyes = self._cur_sp_eyes
             msg = c["sp_msg"]
             if self.emo == "angry":
                 shake = self.t % 2
+            state_name = "special"
         elif self.mode == "blink":
             eyes = "= ="
+            state_name = "blink"
         elif self.t % 20 < 3:
             eyes = c["alt_eyes"]
 
         deco = c["decos"][self.t % len(c["decos"])]
-        return self.art_mod.render(c, eyes, msg, deco, self.t, shake)
+        return {"state": state_name, "eyes": eyes, "msg": msg, "deco": deco, "shake": shake}
+
+    def tick(self):
+        self.t += 1
+        state = self._compute_state()
+        return self.art_mod.render(
+            self.cfg, state["eyes"], state["msg"], state["deco"], self.t, state["shake"],
+        )
 
 
 def main():
