@@ -1,7 +1,7 @@
 {
   "name": "claude-mascot-marketplace",
   "description": "Home of the claude-mascot plugin",
-  "owner": { "name": "<owner>", "url": "https://github.com/<owner>" },
+  "owner": { "name": "PPTaa", "url": "https://github.com/PPTaa" },
   "plugins": [
     { "name": "claude-mascot", "source": "./" }
   ]

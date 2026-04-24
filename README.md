@@ -36,7 +36,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 In Claude Code, add this repo as a marketplace and install the plugin:
 
 ```
-/plugins marketplace add github:<owner>/claude-mascot
+/plugins marketplace add github:PPTaa/claude-mascot
 /plugins install claude-mascot@claude-mascot-marketplace
 ```
 

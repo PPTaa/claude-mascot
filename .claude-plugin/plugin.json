@@ -2,9 +2,9 @@
   "name": "claude-mascot",
   "version": "0.1.0",
   "description": "A tsundere cat mascot (and friends) reacting to Claude Code activity in a tmux pane",
-  "author": { "name": "<owner>", "url": "https://github.com/<owner>" },
+  "author": { "name": "PPTaa", "url": "https://github.com/PPTaa" },
   "license": "MIT",
-  "repository": "https://github.com/<owner>/claude-mascot",
+  "repository": "https://github.com/PPTaa/claude-mascot",
   "keywords": ["claude-code", "plugin", "tmux", "mascot", "tsundere"],
   "requirements": {
     "claudeCode": ">=1.0.0",
