@@ -43,13 +43,32 @@ Inside Claude Code, register this repo as a marketplace, then install the plugin
 
 Then run `claude` inside a tmux session — the mascot pane appears at the bottom automatically.
 
+## Characters
+
+Two characters ship with the plugin. Switch between them via the `character` userConfig.
+
+| ID | Name | Renderer | Notes |
+| --- | --- | --- | --- |
+| `nabi` | Nabi (tsundere cat) | `programmatic` | Programmatic ANSI art with blinking, tail, and decorations. Default. |
+| `fubao` | Fubao (느긋한 판다) | `frames` | Pre-rendered ANSI image frames produced from CC-licensed panda photos via `chafa`. |
+
+Adding a frames-renderer character of your own:
+
+1. Mirror `characters/fubao/` — `character.json` (`"renderer": "frames"`), `emotion_rules.json`, `messages.<lang>.json`, `art.py` with `RENDERER = "frames"`.
+2. Drop raw images into `characters/<name>/raw/` as `<emotion>_<state>.{jpg,png,webp}`.
+3. Install `chafa` locally (`brew install chafa` on macOS).
+4. Run `uv run scripts/prerender.py <name>` — generates `frames/{small,medium,large}/*.txt`.
+5. Add your id to the `character` enum in `.claude-plugin/plugin.json`.
+
+End users don't need `chafa` installed — the committed `frames/` files are all the runtime needs.
+
 ## Configuration
 
 All options live under `pluginConfigs["claude-mascot@claude-mascot-marketplace"].options` in `~/.claude/settings.json`:
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `character` | string | `"nabi"` | Which mascot character to display (currently only `nabi`) |
+| `character` | `"nabi" \| "fubao"` | `"nabi"` | Which mascot character to display |
 | `language` | `"ko" \| "en"` | `"ko"` | Message language |
 | `paneHeight` | number (8–30) | `14` | Height of the tmux pane in rows |
 | `stopHookEnabled` | boolean | `true` | Enable the transcript-scanning fallback at end of every response |
@@ -103,14 +122,12 @@ Exact patterns: `characters/nabi/emotion_rules.json`.
 
 ### Adding a new character
 
-1. Create `characters/<id>/` with:
-   - `character.json` (id, displayName, supportedEmotions, supportedLanguages, defaultLanguage)
-   - `art.py` (`EMOTIONS` dict + `render()` matching `characters/nabi/art.py`)
-   - `messages.<lang>.json` per supported language
-   - `emotion_rules.json` (priority + regex patterns)
-   - `ascii/<emotion>.txt` per emotion
-2. Update the `character` default in `.claude-plugin/plugin.json` if you want your id to be the new default (the field is free-form string — no enum to edit).
-3. Test locally, open a PR.
+See the "Characters" section above for the quick recipe. Both renderers are supported:
+
+- **`RENDERER = "programmatic"`** — Python `render()` returns ANSI lines per tick (see `characters/nabi/art.py`). Good for ASCII art with live tweens.
+- **`RENDERER = "frames"`** — pre-rendered ANSI text files loaded at runtime (see `characters/fubao/art.py`). Good for photo- or illustration-based characters.
+
+Update the `character` enum in `.claude-plugin/plugin.json` to include your new id. Test locally, open a PR.
 
 ### Running tests
 
