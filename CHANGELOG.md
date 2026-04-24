@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `pane_height` now flows into `Animator`, so the frames renderer can pick a size that fits the configured tmux pane and keep the message line on screen.
 
 ### Changed
-- `character` userConfig is now an enum of `["nabi", "fubao"]` (was free-form string).
+- `character` userConfig description updated to accept `"nabi" | "fubao"` (still a free-form string — Claude Code's plugin schema does not support enum constraints yet).
 - `_compute_state()` extracted from `Animator.tick()` so both render pipelines share state bookkeeping.
 
 ### Fixed
