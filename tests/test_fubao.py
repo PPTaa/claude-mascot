@@ -84,3 +84,17 @@ def test_fubao_render_keeps_message_under_clip(tmp_path, monkeypatch):
     # pane_lines for pane=8 is 7; render should truncate image so MSG survives lines[:7]
     truncated = out[:7]
     assert any("MSG" in line for line in truncated)
+
+
+def test_fubao_animator_produces_non_empty_output():
+    """Full path: load fubao, render one frame, check non-empty and message present."""
+    from mcp_server.display import Animator
+    from characters.fubao.art import EMOTIONS
+
+    a = Animator("fubao", "happy", pane_height=14)
+    lines = a.tick()
+    assert isinstance(lines, list)
+    assert len(lines) > 0
+    joined = "\n".join(lines)
+    assert any(line.strip() for line in lines)
+    assert EMOTIONS["happy"]["msg"] in joined or EMOTIONS["happy"]["sp_msg"] in joined
