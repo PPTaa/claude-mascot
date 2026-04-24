@@ -46,9 +46,9 @@ characters/fubao/
 │   ├── ... (7 emotions × 3 states = 21 files)
 │   └── SOURCES.md              # per-file license / attribution
 ├── frames/                     # pre-rendered ANSI text, committed
-│   ├── small/                  # 20×5 cells   (pane_height 8–11)
-│   ├── medium/                 # 28×10 cells  (pane_height 12–20, default 14)
-│   └── large/                  # 36×18 cells  (pane_height 21–30)
+│   ├── small/                  # 6×6 cells    (pane_height 8–11)
+│   ├── medium/                 # 10×10 cells  (pane_height 12–20, default 14)
+│   └── large/                  # 18×18 cells  (pane_height 21–30)
 │       ├── neutral_idle.txt
 │       └── ... (21 text files per size, 63 total)
 └── art.py                      # frame loader + render()
@@ -104,10 +104,14 @@ def _load(size: str, emotion: str, state: str) -> list[str]:
         return [f"[frame missing: {emotion}_{state}]"]
 
 def render(cfg, emotion, state, message, pane_height):
-    """state ∈ {idle, blink, special}. Returns list[str]."""
+    """state ∈ {idle, blink, special}. Returns list[str] sized to fit pane."""
     size = _pick_size(pane_height)
-    lines = _load(size, emotion, state)
-    return lines + ["", f"  {message}", ""]
+    pane_lines = max(7, min(29, pane_height - 1))
+    img_lines = _load(size, emotion, state)
+    # Reserve last 3 rows for the message; clip image bottom if needed so
+    # display.py's lines[:pane_lines] never drops the message row.
+    img_budget = max(1, pane_lines - 3)
+    return img_lines[:img_budget] + ["", f"  {message}", ""]
 ```
 
 ### Animator Dispatch (`mcp_server/display.py`)
@@ -152,11 +156,16 @@ extracted so both render paths can share it.
 | `blink`   | every 8–15 ticks      | 2 ticks  | `{emotion}_blink.txt`  |
 | `special` | every 25–40 ticks     | 4 ticks  | `{emotion}_special.txt`|
 
-Sizing rationale: each rendered frame plus 3 lines (blank + message + blank)
-must fit inside `pane_lines = max(7, min(29, pane_height-1))`. The chosen
-heights (5, 10, 18) leave the message visible across the whole 8–30 pane
-range. Final calibration may adjust by ±1 row after visual testing on real
-panes.
+Sizing rationale: sizes are square (W = H) so chafa preserves image aspect
+on roughly 2:1 terminal cells — the rendered panda will appear slightly
+squished vertically, which is the expected terminal-image look. Each
+rendered frame plus 3 lines (blank + message + blank) should fit inside
+`pane_lines = max(7, min(29, pane_height-1))`; at the smallest panes
+(8–9 rows) the image may be clipped from the bottom. The renderer in
+`art.py` builds the lines with the message positioned so that
+`lines[:pane_lines]` always keeps the message row — that is, image bottom
+is sacrificed before the message. Final dimensions may adjust by ±2 cells
+after visual testing on real panes.
 
 Notes:
 - `sp_msg` replaces `msg` only during `special` state (existing behavior).
@@ -181,7 +190,7 @@ Behavior:
 - Load the character's `character.json`; abort if `renderer != "frames"`.
 - For each `(emotion, state)` in the character's supported set, look up the
   matching raw file (accept `.jpg`, `.png`, `.webp`).
-- For each size in `{small: (20,5), medium: (28,10), large: (36,18)}`,
+- For each size in `{small: (6,6), medium: (10,10), large: (18,18)}`,
   invoke:
   ```
   chafa -f symbols -c full --size {W}x{H} --polite on {raw}
