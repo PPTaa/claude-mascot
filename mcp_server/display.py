@@ -18,7 +18,7 @@ INTERVAL = 0.4     # 2.5 FPS
 
 
 class Animator:
-    def __init__(self, character_id: str, emotion: str, custom_message: str = ""):
+    def __init__(self, character_id: str, emotion: str, custom_message: str = "", pane_height: int = 14):
         art_mod = import_module(f"characters.{character_id}.art")
         self.art_mod = art_mod
         self.cfg = art_mod.EMOTIONS.get(emotion, art_mod.EMOTIONS["neutral"])
@@ -26,6 +26,7 @@ class Animator:
             self.cfg = dict(self.cfg)
             self.cfg["msg"] = custom_message
         self.emo = emotion
+        self.pane_height = pane_height
         self.t = 0
         self.mode = "idle"
         self.mode_end = 0
@@ -36,14 +37,15 @@ class Animator:
     def _schedule(self, key, lo, hi):
         setattr(self, f"_next_{key}", self.t + random.randint(lo, hi))
 
-    def tick(self):
-        self.t += 1
+    def _compute_state(self):
+        """Compute current animation state. Returns dict with keys:
+        state ('idle'|'blink'|'special'), eyes, msg, deco, shake."""
         c = self.cfg
         if self.mode == "idle":
             if self.t >= self._next_special:
                 self.mode = "special"
                 self.mode_end = self.t + 4
-                self._cur_sp_eyes = c["sp_eyes"]
+                self._cur_sp_eyes = c.get("sp_eyes")
                 self._schedule("special", 25, 40)
             elif self.t >= self._next_blink:
                 self.mode = "blink"
@@ -52,21 +54,37 @@ class Animator:
         elif self.t >= self.mode_end:
             self.mode = "idle"
 
-        eyes = c["eyes"]
+        eyes = c.get("eyes", "")
         msg = c["msg"]
         shake = 0
+        state_name = "idle"
         if self.mode == "special":
-            eyes = self._cur_sp_eyes
+            eyes = self._cur_sp_eyes or ""
             msg = c["sp_msg"]
             if self.emo == "angry":
                 shake = self.t % 2
+            state_name = "special"
         elif self.mode == "blink":
             eyes = "= ="
+            state_name = "blink"
         elif self.t % 20 < 3:
-            eyes = c["alt_eyes"]
+            eyes = c.get("alt_eyes", eyes)
 
-        deco = c["decos"][self.t % len(c["decos"])]
-        return self.art_mod.render(c, eyes, msg, deco, self.t, shake)
+        decos = c.get("decos", [""])
+        deco = decos[self.t % len(decos)]
+        return {"state": state_name, "eyes": eyes, "msg": msg, "deco": deco, "shake": shake}
+
+    def tick(self):
+        self.t += 1
+        state = self._compute_state()
+        renderer = getattr(self.art_mod, "RENDERER", "programmatic")
+        if renderer == "frames":
+            return self.art_mod.render(
+                self.cfg, self.emo, state["state"], state["msg"], self.pane_height,
+            )
+        return self.art_mod.render(
+            self.cfg, state["eyes"], state["msg"], state["deco"], self.t, state["shake"],
+        )
 
 
 def main():
@@ -93,7 +111,7 @@ def main():
     sys.stdout.write(CLR + HOME + HIDE)
     sys.stdout.flush()
 
-    anim = Animator(character_id, emotion, custom_message)
+    anim = Animator(character_id, emotion, custom_message, pane_height=pane_height)
 
     try:
         while True:

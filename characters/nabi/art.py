@@ -1,5 +1,7 @@
 """Nabi character art — frames and renderer."""
 
+RENDERER = "programmatic"
+
 # ── Colors ──
 O  = "\033[38;5;208m"    # orange
 W  = "\033[97m"          # white

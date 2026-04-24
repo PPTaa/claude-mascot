@@ -1,0 +1,10 @@
+{
+  "id": "fubao",
+  "displayName": "Fubao (느긋한 판다)",
+  "description": "A cute, lazy panda that reacts to Claude Code activity through pre-rendered image frames",
+  "license": "MIT",
+  "renderer": "frames",
+  "supportedEmotions": ["neutral", "happy", "angry", "shy", "sad", "surprised", "love"],
+  "defaultLanguage": "ko",
+  "supportedLanguages": ["ko", "en"]
+}
