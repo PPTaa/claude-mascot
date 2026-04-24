@@ -15,7 +15,8 @@
     "character": {
       "type": "string",
       "title": "Character",
-      "description": "Which mascot character to display (currently only: nabi)",
+      "description": "Which mascot character to display (nabi | fubao)",
+      "enum": ["nabi", "fubao"],
       "default": "nabi"
     },
     "language": {
