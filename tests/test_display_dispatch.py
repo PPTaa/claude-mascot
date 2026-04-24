@@ -38,3 +38,29 @@ def test_animator_compute_state_special_uses_sp_msg():
     state = a._compute_state()
     assert state["state"] == "special"
     assert state["msg"] == a.cfg["sp_msg"]
+
+
+def test_animator_accepts_pane_height():
+    a = Animator("nabi", "neutral", pane_height=22)
+    assert a.pane_height == 22
+
+
+def test_animator_pane_height_defaults_to_14():
+    a = Animator("nabi", "neutral")
+    assert a.pane_height == 14
+
+
+def test_animator_dispatches_to_frames_renderer():
+    a = Animator("fubao", "happy", pane_height=14)
+    lines = a.tick()
+    assert isinstance(lines, list)
+    from characters.fubao.art import EMOTIONS
+    joined = "\n".join(lines)
+    assert EMOTIONS["happy"]["msg"] in joined or EMOTIONS["happy"]["sp_msg"] in joined
+
+
+def test_animator_dispatches_to_programmatic_renderer():
+    a = Animator("nabi", "happy", pane_height=14)
+    lines = a.tick()
+    assert isinstance(lines, list)
+    assert len(lines) > 0
