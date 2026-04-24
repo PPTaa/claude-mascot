@@ -1,0 +1,44 @@
+{
+  "happy": [
+    "Hehe~ feeling good",
+    "Nom nom~ tasty bamboo",
+    "Yay yay! So happy",
+    "Two-bamboo kind of mood today"
+  ],
+  "sad": [
+    "Uhn... so sad...",
+    "Sniffle...",
+    "Sad because hungry...",
+    "No bamboo... sob"
+  ],
+  "angry": [
+    "Hmph~ I'm pouting",
+    "Don't steal my bamboo!",
+    "Grrr... I'll roll on you",
+    "Okay I'm really sulking now"
+  ],
+  "surprised": [
+    "Huh?! What what?",
+    "Whoa!",
+    "Nom?! You startled me",
+    "Eep!"
+  ],
+  "shy": [
+    "Mmhm... embarrassing",
+    "Rolling away to hide",
+    "Ehe... don't look at me",
+    "Poke... don't stare"
+  ],
+  "love": [
+    "Fluff fluff ♥",
+    "Woohoo~ ♥♥",
+    "I like you more than bamboo",
+    "Hehe... give me a hug"
+  ],
+  "neutral": [
+    "Eating bamboo...",
+    "Nom nom...",
+    "Hmm... what to do",
+    "Drifting off... sleepy"
+  ]
+}
